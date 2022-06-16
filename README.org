@@ -147,15 +147,19 @@ we seek to define a function with the following example behaviour.
         |   |
         | O | O
         |   |
-     -----------
+---------------------
         |   |
       O | X | O
         |   |
-     -----------
+---------------------
         |   |
       X | X | X
         |   |
 
+#+end_src
+Can be achieved by using this function
+#+begin_src haskell
+putGird :: Grid -> IO
 #+end_src
 
 * Something
