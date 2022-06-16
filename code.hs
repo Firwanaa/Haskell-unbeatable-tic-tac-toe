@@ -79,7 +79,18 @@ diag g = [g !! n !! n | n <- [0..size-1]]
 won :: Grid -> Bool
 won g = wins O g || wins X g
 
-
+> putGrid [[B,O,O],[O,X,O],[X,X,X]]
+        |   |
+        | O | O
+        |   |
+     -----------
+        |   |
+      O | X | O
+        |   |
+     -----------
+        |   |
+      X | X | X
+        |   |
 
 
 

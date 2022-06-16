@@ -142,7 +142,8 @@ won g = wins O g || wins X g
 * Displaying a grid
 we seek to define a function with the following example behaviour.
 
-~> putGrid [[B,O,O],[O,X,O],[X,X,X]]~
+#+begin_src sh
+> putGrid [[B,O,O],[O,X,O],[X,X,X]]
         |   |
         | O | O
         |   |
@@ -154,7 +155,6 @@ we seek to define a function with the following example behaviour.
         |   |
       X | X | X
         |   |
-#+begin_src haskell
 
 #+end_src
 
