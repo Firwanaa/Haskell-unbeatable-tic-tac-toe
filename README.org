@@ -1,0 +1,153 @@
+#+TITLE: Programming in Haskell - Graham Hutton - Ch11 - Unbeatable Tic-Tac-Toe
+#+AUTHOR: Firwanaa
+#+PROPERTY: header-args :tangle code.hs
+#+auto_tangle: t
+#+STARTUP: showeverything
+
+* TABLE OF CONTENTS :toc:
+- [[#imports][Imports]]
+- [[#basic-declarations][Basic declarations]]
+  - [[#grid][Grid]]
+  - [[#player][Player]]
+  - [[#next][Next]]
+- [[#grid-utilities][Grid utilities]]
+  - [[#empty][Empty]]
+  - [[#empty-1][Empty]]
+  - [[#turn][Turn]]
+  - [[#win][Win]]
+  - [[#diag][Diag]]
+- [[#something][Something]]
+- [[#something-1][Something]]
+- [[#something-2][Something]]
+- [[#something-3][Something]]
+- [[#something-4][Something]]
+
+* Imports
+#+begin_src haskell
+import Data.List
+import Data.Char
+import System.IO
+#+end_src
+
+* Basic declarations
+** Grid
+#+begin_src haskell
+-- You can change the grid size here
+size :: Int
+size = 3
+
+-- we represent the grid as list of lists of player values [[player]]
+type Grid = [[Player]]
+#+end_src
+** Player
+Player value is either O, B or X, where the extra B represents a blank space
+#+begin_src haskell
+data Player = O | B | X deriving (Eq, Ord, Show)
+
+-- example of winning grid
+-- [[B,O,O]]
+-- [[O,X,O]]
+-- [[X,X,X]]
+#+end_src
+** Next
+The next player to move is given simply by swapping between O and X, with the case for the blank value B being included for completeness even though the function should never be applied to this value
+#+begin_src haskell
+next :: Player -> Player
+next O = X
+next B = B
+next X = O
+#+end_src
+
+* Grid utilities
+We make use of a number of utilities on tic-tac-toe grids.
+** Empty
+First of all, we define the empty grid by replicating the blank player value to create an empty row,and then replicating this row to create an empty grid.
+#+begin_src haskell
+empty :: Grid
+empty = replicate size (replicate size B)
+
+-- [[B,B,B]]
+-- [[B,B,B]]
+-- [[B,B,B]]
+#+end_src
+** Empty
+Grid is full if all of its player values are non-blank
+#+begin_src haskell
+full :: Grid -> Bool
+full = all (/=B) . concat
+-- concat will flatten the list to single list, otherwise "all" will fail
+full1 :: Grid -> Bool
+full1 xs = all (/=B) $ concat xs
+
+full2 :: Grid -> Bool
+full2 xs = all (==B) [y | y <- concat xs]
+#+end_src
+** Turn
+Decide whose turn it is by comparing the number of O’s and X’s in a flattened grid.
+#+begin_src haskell
+turn :: Grid -> Player
+turn g = if os <= xs then O else X
+         where
+           os = length (filter (==O) ps)
+           xs = length (filter (==X) ps)
+           ps = concat g
+#+end_src
+** Win
+If a player has a complete line in any row, column, or either diagonal in the grid
+#+begin_src haskell
+wins :: Player -> Grid -> Bool
+wins p g = any line (rows ++ cols ++ dias)
+           where
+             line = all (==p)
+             rows = g
+             cols = transpose g -- transpose is a function from Data.List, converts grid cols into rows
+             dias = [diag g, diag (map reverse g)]
+#+end_src
+** Diag
+Returns diagonal of grid
+#+begin_src haskell
+diag :: Grid -> [Player]
+diag g = [g !! n !! n | n <- [0..size-1]]
+--eg. testList =
+-- [[1,2,3]]
+-- [[4,5,6]]
+-- [[7,8,9]]
+-- > diag testList = [testList !! n !! n | n <- [0..size-1]]
+--                 = [testList !! 0 !! 0 | 0 <- [0..(2)]] = [1]    -- which is (0,0)
+--                 = [testList !! 1 !! 1 | 1 <- [0..(2)]] = [1,5]  -- which is (1,1)
+--                 = [testList !! 2 !! 2 | 2 <- [0..(2)]] = [1,5,9]-- which is (2,2)
+-- > [1,5,9]
+-- > diag (map reverse testList)
+-- map reverse testList
+-- [[3,2,1]]
+-- [[6,5,4]]
+-- [[9,8,7]]
+-- diag (the new list above)
+-- [3,5,7]
+-- resutl of [diag testList, diag (map reverse testList)]
+-- > [[1,5,9],[3,5,7]]
+#+end_src
+* Something
+#+begin_src haskell
+
+#+end_src
+
+* Something
+#+begin_src haskell
+
+#+end_src
+
+* Something
+#+begin_src haskell
+
+#+end_src
+
+* Something
+#+begin_src haskell
+
+#+end_src
+
+* Something
+#+begin_src haskell
+
+#+end_src
