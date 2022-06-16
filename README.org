@@ -16,11 +16,12 @@
   - [[#turn][Turn]]
   - [[#win][Win]]
   - [[#diag][Diag]]
+  - [[#won][Won]]
 - [[#something][Something]]
+- [[#displaying-a-grid][Displaying a grid]]
 - [[#something-1][Something]]
 - [[#something-2][Something]]
 - [[#something-3][Something]]
-- [[#something-4][Something]]
 
 * Imports
 #+begin_src haskell
@@ -76,6 +77,8 @@ Grid is full if all of its player values are non-blank
 full :: Grid -> Bool
 full = all (/=B) . concat
 -- concat will flatten the list to single list, otherwise "all" will fail
+
+-- all duplicate functions are me just practicing
 full1 :: Grid -> Bool
 full1 xs = all (/=B) $ concat xs
 
@@ -108,7 +111,8 @@ Returns diagonal of grid
 #+begin_src haskell
 diag :: Grid -> [Player]
 diag g = [g !! n !! n | n <- [0..size-1]]
---eg. testList =
+--eg.
+-- > testList =
 -- [[1,2,3]]
 -- [[4,5,6]]
 -- [[7,8,9]]
@@ -127,12 +131,28 @@ diag g = [g !! n !! n | n <- [0..size-1]]
 -- resutl of [diag testList, diag (map reverse testList)]
 -- > [[1,5,9],[3,5,7]]
 #+end_src
+** Won
+To decide if either player has won
 * Something
 #+begin_src haskell
-
+won :: Grid -> Bool
+won g = wins O g || wins X g
 #+end_src
 
-* Something
+* Displaying a grid
+we seek to define a function with the following example behaviour.
+~> putGrid [[B,O,O],[O,X,O],[X,X,X]]~
+        |   |
+        | O | O
+        |   |
+     -----------
+        |   |
+      O | X | O
+        |   |
+     -----------
+        |   |
+      X | X | X
+        |   |
 #+begin_src haskell
 
 #+end_src

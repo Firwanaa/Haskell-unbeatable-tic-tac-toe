@@ -31,6 +31,8 @@ empty = replicate size (replicate size B)
 full :: Grid -> Bool
 full = all (/=B) . concat
 -- concat will flatten the list to single list, otherwise "all" will fail
+
+-- all duplicate functions are me just practicing
 full1 :: Grid -> Bool
 full1 xs = all (/=B) $ concat xs
 
@@ -54,7 +56,8 @@ wins p g = any line (rows ++ cols ++ dias)
 
 diag :: Grid -> [Player]
 diag g = [g !! n !! n | n <- [0..size-1]]
---eg. testList =
+--eg.
+-- > testList =
 -- [[1,2,3]]
 -- [[4,5,6]]
 -- [[7,8,9]]
@@ -73,7 +76,8 @@ diag g = [g !! n !! n | n <- [0..size-1]]
 -- resutl of [diag testList, diag (map reverse testList)]
 -- > [[1,5,9],[3,5,7]]
 
-
+won :: Grid -> Bool
+won g = wins O g || wins X g
 
 
 
