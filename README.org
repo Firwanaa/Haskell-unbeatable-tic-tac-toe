@@ -142,7 +142,7 @@ won g = wins O g || wins X g
 * Displaying a grid
 we seek to define a function with the following example behaviour.
 
-#+begin_src sh
+#+begin_src
 > putGrid [[B,O,O],[O,X,O],[X,X,X]]
         |   |
         | O | O
@@ -159,7 +159,28 @@ we seek to define a function with the following example behaviour.
 #+end_src
 Can be achieved by using this function
 #+begin_src haskell
-putGird :: Grid -> IO
+putGrid :: Grid -> IO ()
+putGrid = putStrLn . unlines . concat . interleave bar . map showRow
+          where bar = [replicate ((size*4)-1) '-']
+
+-- convert each row to a list of strings
+showRow :: [Player] -> [String]
+showRow = beside . interleave bar . map showPlayer
+          where
+            beside = foldr1 (zipWith (++))
+            bar = replicate 3 "|"
+
+-- convert a player value to a list of strings
+showPlayer :: Player -> [String]
+showPlayer O = ["   ", " O ", "  "]
+showPlayer B = ["   ", "   ", "  "]
+showPlayer X = ["   ", " X ", "  "]
+
+-- interleave a value between each element in the list
+interleave :: a -> [a] -> [a]
+interleave x []     = []
+interleave x [y]    = [y]
+interleave x (y:ys) = y : x : interleave x ys
 #+end_src
 
 * Something

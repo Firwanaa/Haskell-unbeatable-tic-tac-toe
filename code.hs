@@ -79,20 +79,28 @@ diag g = [g !! n !! n | n <- [0..size-1]]
 won :: Grid -> Bool
 won g = wins O g || wins X g
 
-> putGrid [[B,O,O],[O,X,O],[X,X,X]]
-        |   |
-        | O | O
-        |   |
----------------------
-        |   |
-      O | X | O
-        |   |
----------------------
-        |   |
-      X | X | X
-        |   |
+putGrid :: Grid -> IO ()
+putGrid = putStrLn . unlines . concat . interleave bar . map showRow
+          where bar = [replicate ((size*4)-1) '-']
 
-putGird :: Grid -> IO
+-- convert each row to a list of strings
+showRow :: [Player] -> [String]
+showRow = beside . interleave bar . map showPlayer
+          where
+            beside = foldr1 (zipWith (++))
+            bar = replicate 3 "|"
+
+-- convert a player value to a list of strings
+showPlayer :: Player -> [String]
+showPlayer O = ["   ", " O ", "  "]
+showPlayer B = ["   ", "   ", "  "]
+showPlayer X = ["   ", " X ", "  "]
+
+-- interleave a value between each element in the list
+interleave :: a -> [a] -> [a]
+interleave x []     = []
+interleave x [y]    = [y]
+interleave x (y:ys) = y : x : interleave x ys
 
 
 
