@@ -19,9 +19,14 @@
   - [[#won][Won]]
 - [[#something][Something]]
 - [[#displaying-a-grid][Displaying a grid]]
+- [[#making-a-move][Making a move]]
+  - [[#valid][valid]]
+  - [[#move][move]]
+- [[#reading-a-number][Reading a number]]
+  - [[#getnat][getNat]]
+- [[#human-vs-human][Human vs human]]
+  - [[#run][run']]
 - [[#something-1][Something]]
-- [[#something-2][Something]]
-- [[#something-3][Something]]
 
 * Imports
 #+begin_src haskell
@@ -183,14 +188,79 @@ interleave x [y]    = [y]
 interleave x (y:ys) = y : x : interleave x ys
 #+end_src
 
-* Something
+* Making a move
+To identify where a player wishes to make a move during the game, we index each position in the grid by a natural number, starting from zero in the top-left corner and proceeding along each row in turn.
++-----+-----+-----+
+|  0  |  1  |  2  |
++-----+-----+-----+
+|  3  |  4  |  5  |
++-----+-----+-----+
+|  6  |  7  |  8  |
++-----+-----+-----+
+** valid
+Attempting to make a move at a particular index is valid if the index is within the appropriate range, and the position is currently blank.
 #+begin_src haskell
+valid :: Grid -> Int -> Bool
+valid g i = O <= i && < size^2 && concat g !! == B
+#+end_src
+** move
+We now define a function that applies a move to a grid.
+#+begin_src haskell
+move :: Grid -> Int -> Player [Grid]
+move g i p = if valid g i then [chop size (xs ++ [p] ys)] else []
+             where (xs,B:ys) = splitAt i (concat g)
 
+chop :: Int -> [a] -> [[a]]
+chop n [] = []
+chop n xs = take n xs : chop n (drop n xs)
 #+end_src
 
-* Something
+* Reading a number
+To read a grid index from a human player, we define a function getNat that displays a prompt and reads a natural number from the keyboard.
+** getNat
 #+begin_src haskell
+getNat :: String -> IO Int
+getNat prompt = do putStr prompt
+                   xs <- getLine
+                   if xs /= [] && all isDigit xs then -- isDigit provided in Data.Char
+                      return (read xs)
+                   else
+                      do putStrLn "Error: Invalid number"
+                         getNat prompt
+#+end_src
 
+* Human vs human
+We define an action that implements the game using two mutually recursive functions that take the current grid and player as argument
+#+begin_src haskell
+tictactoe :: IO ()
+tictactoe = run empty O
+
+run :: Grid -> Player -> IO ()
+run g p = do cls
+             goto(1,1)
+             putGrid g
+             run' g p
+
+type Pos = (Int, Int)
+
+cls :: IO ()
+cls = putStr "\ESC[2J"
+
+goto :: Pos -> IO ()
+goto (x,y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
+#+end_src
+** run'
+#+begin_src haskell
+run’ :: Grid -> Player -> IO ()
+run’ g p | wins O g = putStrLn "Player O wins!\n"
+         | wins X g = putStrLn "Player X wins!\n"
+         | full g = putStrLn "It’s a draw!\n"
+         | otherwise =
+              do i <- getNat (prompt p)
+              case move g i p of
+              [] -> do putStrLn "ERROR: Invalid move"
+                       run’ g p
+              [g’] -> run g’ (next p)
 #+end_src
 
 * Something
